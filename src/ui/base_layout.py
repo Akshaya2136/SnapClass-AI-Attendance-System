@@ -29,6 +29,7 @@ def style_background_dashboard():
     
 
 def style_base_layout():
+# asdasd
     st.markdown("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Climate+Crisis:YEAR@1979&display=swap');
@@ -42,7 +43,7 @@ def style_base_layout():
                 
                 .block-container{
                     padding-top: 1.5rem !important;
-                }
+                } 
 
                 h1{
                    font-family: 'Climate Crisis', sans-serif !important;
@@ -62,9 +63,11 @@ def style_base_layout():
                 h3, h4, p{
                     font-familt: 'Outfit', sans-serif; 
                 }
+                
 
-                button[kind = "secondary"]{
-                    background: #EB459E !important;
+                button[kind = "primary"]{
+                    color: white !important;
+                    background: #5865F2 !important;
                     border-radius: 1.5rem !important;
                     padding: 10px 20px !important;
                     border: none !important;
@@ -72,6 +75,7 @@ def style_base_layout():
                 }
 
                 button[kind = "tertiary"]{
+                    color: white !important;
                     background: black !important;
                     border-radius: 1.5rem !important;
                     padding: 10px 20px !important;
@@ -79,13 +83,15 @@ def style_base_layout():
                     transition: transform 0.25s ease-in-out !important;
                 }
 
-                button[kind = "primary"]{
-                    background: #5865F2 !important;
+                 button[kind = "secondary"]{
+                    color: white !important;
+                    background: #EB459E !important;
                     border-radius: 1.5rem !important;
                     padding: 10px 20px !important;
                     border: none !important;
                     transition: transform 0.25s ease-in-out !important;
                 }
+
 
                 button:hover{
                     transform : scale(1.05)
