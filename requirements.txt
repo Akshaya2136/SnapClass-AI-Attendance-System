@@ -16,4 +16,6 @@ pillow
 
 streamlit
 
+librosa
+resemblyzer
 

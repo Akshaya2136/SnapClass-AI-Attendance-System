@@ -96,6 +96,23 @@ def style_base_layout():
                 button:hover{
                     transform : scale(1.05)
                 }
+
+
+                /* Camera Take Photo button */
+                [data-testid="stCameraInputButton"] {
+                    background-color: #5865F2 !important;
+                    color: white !important;
+                    border: none !important;
+                    border-radius: 1.5rem !important;
+                    padding: 10px 20px !important;
+                    font-weight: 600 !important;
+                    transition: transform 0.25s ease-in-out !important;
+                }
+
+                [data-testid="stCameraInputButton"]:hover {
+                background-color: #4752c4 !important;
+                transform: scale(1.05);
+                }
                 
         </style>
                 """
