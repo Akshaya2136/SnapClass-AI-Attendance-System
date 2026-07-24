@@ -8,7 +8,7 @@ from src.database.db import get_all_students
 
 @st.cache_resource  #loads only one time , instead of everytime(rerender) which saves memory
 def load_dlib_models():
-    detecter = dlib.get_frontal_face_detector()
+    detector = dlib.get_frontal_face_detector()
 
 
     sp = dlib.shape_predictor(
@@ -20,11 +20,11 @@ def load_dlib_models():
     )
 
     
-    return detecter, sp, facerec
+    return detector, sp, facerec
 
 def get_face_embeddings(image_np):
-    detecter, sp, facerec  = load_dlib_models()
-    faces = detecter(image_np, 1)
+    detector, sp, facerec  = load_dlib_models()
+    faces = detector(image_np, 1)
 
     encodings = []
 
@@ -41,36 +41,39 @@ def get_trained_model():
     X = []
     y = []
 
-    stundent_db = get_all_students
+    student_db = get_all_students()
 
-    if not stundent_db:
+    if not student_db:
         return None
     
-    for students in stundent_db:
-        embedding = students.get('face_embedding')
+    for student in student_db:
+        embedding = student.get('face_embedding')
         if embedding:
             X.append(np.array(embedding))
-            y.append(np.array('student_id'))
+            y.append(student.get('student_id'))
         
     if len(X) == 0:
         return 0
     
-    clf = SVC(kernal = 'liner', probability=True, class_weight='balanced')
+    clf = SVC(kernel='linear', probability=True, class_weight='balanced')
     
     try:
         clf.fit(X, y)
     except ValueError:
-        pass
+        return None
 
     return {'clf':clf, 'X':X, 'y':y}
 
-
+# cahce invalidating (instead of calling db everytime, show the items already in cache)
+# if there is new studnet cache validate
 def train_classifier():
     st.cache_resource.clear()
     model_data = get_trained_model()
     return bool(model_data)
-    
-def predict_attendence(class_image_np):
+
+
+# predict the faces from the group photo
+def predict_attendance(class_image_np):
     encodings = get_face_embeddings(class_image_np)
 
     detected_student = {}
@@ -87,6 +90,7 @@ def predict_attendence(class_image_np):
     y_train = model_data['y']
 
     
+
     all_students = sorted(list(set(y_train)))
 
     for encoding in encodings:
@@ -94,8 +98,8 @@ def predict_attendence(class_image_np):
             predicted_id = int(clf.predict([encoding])[0])
         else:
             predicted_id = int(all_students[0]) 
-
-        student_embedding = X_train[y_train.index[predicted_id]]
+        # from the id's , take the embeddings of that particular student's using index
+        student_embedding = X_train[y_train.index(predicted_id)]
 
         best_match_score = np.linalg.norm(student_embedding - encoding)
 
@@ -104,4 +108,4 @@ def predict_attendence(class_image_np):
         if best_match_score <= resemblance_threshold:
             detected_student[predicted_id] = True
 
-    return detected_student, all_students, len(encoding)
+    return detected_student, all_students, len(encodings)

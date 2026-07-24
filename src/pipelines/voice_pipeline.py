@@ -7,19 +7,20 @@ import streamlit as st
 
 @st.cache_resource
 def load_voice_encoder():
-    return VoiceEncoder
+    return VoiceEncoder()
 
 
 def get_voice_embedding(audio_bytes):
     try: 
-        encoder = load_voice_encoder
+        encoder = load_voice_encoder()
          
         audio, sr = librosa.load(io.BytesIO(audio_bytes), sr = 16000)
         wav = preprocess_wav(audio)
         embedding = encoder.embed_utterance(wav)
         return embedding.tolist()
     except Exception as e:
-        st.error('Voice recog error')
+        st.error(f'Voice recog error:{e}')
+        return None
 
 
 def identify_speaker(new_embedding, candidates_dict, threshold = 0.65):
@@ -59,12 +60,12 @@ def process_bulk_audio(audio_bytes, candidates_dict, threshold = 0.65):
 
             sid, score = identify_speaker(embedding, candidates_dict, threshold)
             if sid: 
-                if sid not in identify_speaker or score > identified_results(sid):
+                if sid not in identified_results or score > identified_results[sid]:
                     identified_results[sid] = score
 
         return identified_results
     except Exception as e:
-        st.error('Bulk process error')
+        st.error(f'Bulk process error:{e}')
         return {} 
 
 
