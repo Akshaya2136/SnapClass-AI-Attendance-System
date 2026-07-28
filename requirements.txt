@@ -20,7 +20,7 @@ librosa
 resemblyzer
 
 webrtcvad-wheels
-setuptools>=75.0.0
+setuptools<75.0.0
 
 
 
